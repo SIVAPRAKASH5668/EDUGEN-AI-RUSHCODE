@@ -1,0 +1,13 @@
+**Title:** 0.82 Educational Resource Challenges
+
+**Problem Statement:**
+
+There are several challenges that hinder students' ability to access quality education. These challenges can be categorized into three main problems:
+
+**Problem 1: Limited Native Language Resources**
+Students face a lack of comprehensive and high-quality educational materials in their native languages. This limitation makes it harder for them to understand key concepts and access online resources. Furthermore, online resources are limited in underserved communities, exacerbating the issue.
+
+**Problem 2: Inefficient Learning Process**
+Two sub-problems contribute to an inefficient learning process:
+* **Time-Consuming Note-Taking:** Students spend hours taking notes from lengthy lectures and textbooks, leaving little time for focused exam preparation.
+* **Lack of Personalization:** Most educational resources are static and fail to cater to the specific needs of individual learners. This results in a less effective learning process and leads to poor performance in academics.

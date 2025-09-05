@@ -1,0 +1,13 @@
+It seems like you're referring to a basic concept in programming and computer science. "Input" and "Output" (often abbreviated as I/O) are fundamental terms that describe how data is processed and communicated by a system, whether it's a computer, a program, or any other kind of information processing entity.
+
+### Input (I)
+- **Definition**: Input refers to the data or information that is provided to a system, program, or device. This can come in many forms, such as user commands, data files, network packets, or even sensor readings.
+- **Examples**: Typing on a keyboard, clicking a mouse, uploading a file to a website, or a sensor sending temperature readings to a control system.
+
+### Output (O)
+- **Definition**: Output is the result or information that a system, program, or device produces after processing the input. Like input, output can also take many forms.
+- **Examples**: Text displayed on a screen, sound from speakers, a printed document, or a control signal sent to a motor to make it turn.
+
+Together, input and output are crucial for any interactive system. They allow for communication between the user (or another system) and the computer (or device), enabling the exchange of information and the execution of tasks based on that information.
+
+In programming, input/output operations are managed through specific functions or libraries that handle reading from and writing to various devices or data streams. Understanding how to work with input and output is a key skill for any programmer or system designer.

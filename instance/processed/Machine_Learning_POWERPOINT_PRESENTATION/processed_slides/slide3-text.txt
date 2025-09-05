@@ -1,0 +1,5 @@
+Here's the organized and corrected content:
+
+**Title: 0.83 - Why Machine Learning?**
+
+Machine learning has become more accessible due to much more affordable data storage solutions. This has helped make big data sets available to more organizations and for a much wider variety of applications, making it faster and more efficient than ever before.

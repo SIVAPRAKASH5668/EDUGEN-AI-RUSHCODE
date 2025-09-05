@@ -1,0 +1,11 @@
+Here is the organized and corrected content:
+
+**4-Step Process**
+
+1. **Upload Content**: Users upload educational materials such as slides, images, or videos directly to the platform.
+2. **Content Extraction**: The system uses OCR (Optical Character Recognition) to extract text and images while detecting the language of the material.
+3. **Processing & Translation**: AI processes the content, translating it into the user's preferred language while generating concise summaries with key points.
+4. **Delivery of Results**: The platform provides multilingual text and audio explanations, enabling users to comprehend the content effectively.
+
+**Additional Feature: Interactive Learning**
+AI generates quizzes and Q&A sessions based on the uploaded content, fostering deeper understanding and active engagement.

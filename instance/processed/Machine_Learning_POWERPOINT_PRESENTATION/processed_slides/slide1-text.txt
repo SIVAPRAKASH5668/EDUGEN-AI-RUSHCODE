@@ -1,0 +1,5 @@
+It seems like the text is about deep learning, but it's a bit disorganized. Here's a corrected and organized version:
+
+Deep learning is a sub-field of machine learning. It means that the machine uses different layers to learn from the data.
+
+If you'd like to add more information or ask a question, please feel free to do so, and I'll be happy to help.

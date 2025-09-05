@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocumentAI Pro - Smart Study Notes Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3730a3;
+            --secondary-color: #2563eb;
+            --light-bg: #f8fafc;
+            --dark-text: #1e293b;
+            --medium-text: #64748b;
+            --light-text: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #3730a3 0%, #2563eb 100%);
+            --gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --text-light: #ffffff;
+            --text-dark: #1e293b;
+            --sidebar-width: 250px;
+            --topbar-height: 70px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--gradient-light);
+            color: var(--text-dark);
+            padding-top: var(--topbar-height);
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            z-index: 1000;
+            transition: all 0.3s;
+            padding-top: var(--topbar-height);
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            padding: 0.5rem;
+            height: calc(100vh - var(--topbar-height));
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .brand-container {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            margin-bottom: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: var(--topbar-height);
+            display: flex;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .brand-icon {
+            font-size: 1.75rem;
+            margin-right: 0.5rem;
+        }
+
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 1rem 1.25rem;
+            color: var(--medium-text);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar .nav-link {
+            color: var(--medium-text);
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            margin-bottom: 0.25rem;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+
+        .sidebar .nav-link.active {
+            border-left: 3px solid var(--primary-color);
+        }
+
+        /* Top Navbar Styles */
+        .top-navbar {
+            height: var(--topbar-height);
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 0 1rem;
+            z-index: 1020;
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .search-input {
+            border-radius: 50px;
+            padding-left: 2.5rem;
+            background-color: #f1f5f9;
+            border: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .notification-badge {
+            font-size: 0.6rem;
+            padding: 0.25rem 0.4rem;
+            position: absolute;
+            top: 0.25rem;
+            right: 0.5rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            margin-left: var(--sidebar-width);
+            padding-top: 1.5rem;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--secondary-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .btn-gradient {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #312e81 0%, #1e40af 100%);
+            color: white;
+        }
+
+        /* MCQ Test Styles */
+        .mcq-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .mcq-question {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .mcq-question:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .mcq-option {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mcq-option:hover {
+            background-color: #f8fafc;
+        }
+
+        .mcq-option.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        .mcq-option.correct {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+        }
+
+        .mcq-option.incorrect {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+        }
+
+        /* Carousel and Accordion Styles */
+        .carousel-inner {
+            border-radius: 0.5rem;
+        }
+
+        .carousel-item {
+            padding: 1rem;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tool Cards */
+        .tool-card {
+            transition: all 0.3s;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-card .card-img-top {
+            height: 140px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #0ea5e9;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            #sidebar {
+                margin-left: -var(--sidebar-width);
+            }
+            
+            #sidebar.show {
+                margin-left: 0;
+            }
+            
+            main {
+                margin-left: 0;
+            }
+            
+            .top-navbar {
+                left: 0;
+                width: 100%;
+            }
+            
+            .brand-container {
+                width: 100%;
+                left: 0;
+            }
+            
+            .content-area {
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="brand-container">
+                    <i class="bi bi-brain brand-icon"></i>
+                    <h5 class="m-0 fw-bold">Edu RAG</h5>
+                </div>
+                
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading">Main Menu</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-book me-2"></i>
+                                My Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-journal-text me-2"></i>
+                                My Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Schedule
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">AI Tools</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/video2pdf">
+                                <i class="bi bi-camera-video me-2"></i>
+                                Video Analysis
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag">
+                                <i class="bi bi-question-circle me-2"></i>
+                                Question Your Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/notegen">
+                                <i class="bi bi-pencil me-2"></i>
+                                Note Generator
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mcq">
+                                <i class="bi bi-list-check me-2"></i>
+                                MCQ Test
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag_tamil">
+                                <i class="bi bi-translate me-2"></i>
+                                RAG Tamil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/memck">
+                                <i class="bi bi-brain me-2"></i>
+                                Personal Learning
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/content_to_ai_video">
+                                <i class="bi bi-film me-2"></i>
+                                AI Video
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">Account</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-gear me-2"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg top-navbar">
+                <div class="container-fluid">
+                    <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="position-relative d-none d-md-block" style="width: 300px;">
+                        <i class="bi bi-search search-icon"></i>
+                        <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="position-relative me-3">
+                            <button class="btn btn-link text-dark position-relative">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                                    3
+                                </span>
+                            </button>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="user-avatar me-2">JS</div>
+                                <div class="d-none d-md-block">
+                                    <div class="fw-semibold">John Smith</div>
+                                    <div class="small text-muted">Student</div>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <header class="mb-4">
+                    <h1 class="text-primary">Smart Study Notes Generator</h1>
+                    <p class="text-muted">Upload PDFs to generate structured study notes with key concepts and create practice tests.</p>
+                </header>
+
+                <div class="upload-card mb-4">
+                    <form id="uploadForm">
+                        <div class="upload-zone" id="upload-zone">
+                            <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+                            <h5>Drag and drop files here</h5>
+                            <p class="text-muted">or click to browse</p>
+                            <input type="file" id="fileInput" multiple accept=".pdf" class="d-none">
+                        </div>
+                        <button type="submit" class="btn btn-gradient w-100 mt-3">
+                            <i class="fas fa-magic me-2"></i>Generate Notes
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- MCQ Test Controls (Initially Hidden) -->
+                <div id="mcqControls" class="mcq-controls d-none">
+                    <h4 class="mb-3"><i class="bi bi-list-check me-2"></i>Generate Practice Test</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="difficulty" class="form-label">Difficulty Level</label>
+                            <select class="form-select" id="difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numQuestions" class="form-label">Number of Questions</label>
+                            <select class="form-select" id="numQuestions">
+                                <option value="5">5 Questions</option>
+                                <option value="10" selected>10 Questions</option>
+                                <option value="15">15 Questions</option>
+                                <option value="20">20 Questions</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="button" class="btn btn-gradient w-100" id="generateMcqBtn">
+                                <i class="bi bi-plus-circle me-2"></i>Generate Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section with Carousel and Accordion -->
+                <div id="results" class="mt-4"></div>
+                
+                <!-- MCQ Test Display -->
+                <div id="mcqTest" class="mt-4 d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4><i class="bi bi-list-check me-2"></i>Practice Test</h4>
+                        <div class="d-flex gap-3">
+                            <div class="badge bg-primary fs-6" id="testTimer">Time: 30:00</div>
+                            <div class="badge bg-secondary fs-6" id="testProgress">Question 1 of 10</div>
+                        </div>
+                    </div>
+                    
+                    <div id="mcqQuestions"></div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-outline-primary" id="prevQuestion" disabled>
+                            <i class="bi bi-chevron-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-gradient" id="submitTest">
+                            <i class="bi bi-check-circle me-2"></i>Submit Test
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="nextQuestion">
+                            Next<i class="bi bi-chevron-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Test Results -->
+                <div id="testResults" class="mt-4 d-none">
+                    <div class="score-card mb-4">
+                        <h3 class="text-primary mb-3">Test Results</h3>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="h2 text-success mb-1" id="scorePercentage">0%</div>
+                                <div class="text-muted">Overall Score</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h2 text-primary mb-1" id="correctAnswers">0</div>
+                                <div class="text-muted">Correct</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h2 text-danger mb-1" id="incorrectAnswers">0</div>
+                                <div class="text-muted">Incorrect</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h2 text-info mb-1" id="timeTaken">00:00</div>
+                                <div class="text-muted">Time Taken</div>
+                            </div>
+                        </div>
+                        <div class="progress mt-3" style="height: 12px;">
+                            <div class="progress-bar bg-success" role="progressbar" id="scoreProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3 mb-4">
+                        <button type="button" class="btn btn-gradient" id="downloadTestPdf">
+                            <i class="bi bi-download me-2"></i>Download Test PDF
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="reviewAnswers">
+                            <i class="bi bi-eye me-2"></i>Review Answers
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="retakeTest">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Retake Test
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentMcqData = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let testStartTime = null;
+        let testTimer = null;
+        let originalText = "";
+
+        document.getElementById('upload-zone').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        const form = document.getElementById('uploadForm');
+        const results = document.getElementById('results');
+        const mcqControls = document.getElementById('mcqControls');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const files = document.getElementById('fileInput').files;
+            if (files.length === 0) return;
+
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('files[]', file);
+            }
+
+            results.innerHTML = `
+                <div class="text-center p-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-3 text-muted">Processing PDFs and generating notes...</p>
+                </div>
+            `;
+            
+            // Hide MCQ controls and test sections
+            mcqControls.classList.add('d-none');
+            document.getElementById('mcqTest').classList.add('d-none');
+            document.getElementById('testResults').classList.add('d-none');
+
+            try {
+                const response = await fetch('/notegen/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (!data.success) throw new Error(data.error);
+
+                // Store original text for MCQ generation
+                originalText = data.original_text || "";
+
+                // Create carousel and accordion for notes
+                if (data.topics.length > 0) {
+                    // Create carousel for the overview
+                    let carouselHTML = `
+                        <h4 class="mb-3">Generated Notes</h4>
+                        <div id="notesCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                    `;
+                    
+                    // Create carousel indicators
+                    data.topics.forEach((_, index) => {
+                        carouselHTML += `
+                            <button type="button" data-bs-target="#notesCarousel" data-bs-slide-to="${index}" 
+                                ${index === 0 ? 'class="active" aria-current="true"' : ''} 
+                                aria-label="Slide ${index + 1}">
+                            </button>
+                        `;
+                    });
+                    
+                    carouselHTML += `
+                            </div>
+                            <div class="carousel-inner">
+                    `;
+                    
+                    // Create carousel items
+                    data.topics.forEach((topic, index) => {
+                        carouselHTML += `
+                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                <div class="topic-card p-4">
+                                    <h3 class="text-primary">${topic.title}</h3>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        ${topic.key_concepts?.map(concept => 
+                                            `<span class="badge bg-light text-primary px-2 py-1">${concept}</span>`
+                                        ).join('') || ''}
+                                    </div>
+                                    <p>${topic.summary}</p>
+                                    <a href="/notegen/download/${topic.pdf}" class="btn btn-gradient">
+                                        <i class="bi bi-download me-2"></i>Download Notes
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    carouselHTML += `
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#notesCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#notesCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Create detailed accordion
+                    let accordionHTML = `
+                        <h4 class="mb-3">Detailed Notes</h4>
+                        <div class="accordion" id="notesAccordion">
+                    `;
+                    
+                    // Create accordion items
+                    data.topics.forEach((topic, index) => {
+                        accordionHTML += `
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading${index}">
+                                    <button class="accordion-button ${index !== 0 ? 'collapsed' : ''}" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#collapse${index}" 
+                                        aria-expanded="${index === 0 ? 'true' : 'false'}" aria-controls="collapse${index}">
+                                        ${topic.title}
+                                    </button>
+                                </h2>
+                                <div id="collapse${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+                                    aria-labelledby="heading${index}" data-bs-parent="#notesAccordion">
+                                    <div class="accordion-body">
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold">Key Concepts:</h6>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                ${topic.key_concepts?.map(concept => 
+                                                    `<span class="badge bg-light text-primary px-2 py-1">${concept}</span>`
+                                                ).join('') || 'No key concepts available'}
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold">Summary:</h6>
+                                            <p>${topic.summary}</p>
+                                        </div>
+                                        <a href="/notegen/download/${topic.pdf}" class="btn btn-gradient">
+                                            <i class="bi bi-download me-2"></i>Download Full Notes
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    accordionHTML += `</div>`;
+                    
+                    // Combine carousel and accordion
+                    results.innerHTML = carouselHTML + accordionHTML;
+                    
+                    // Show MCQ controls after notes are generated
+                    mcqControls.classList.remove('d-none');
+                    
+                } else {
+                    results.innerHTML = `<p class="text-muted">No notes were generated. Please try different PDF files.</p>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${error.message}
+                </div>`;
+            }
+        });
+        
+        // MCQ Generation Event Listener
+        document.getElementById('generateMcqBtn').addEventListener('click', async () => {
+            if (!originalText) {
+                alert('Please upload and process PDF files first to generate MCQ tests.');
+                return;
+            }
+
+            const difficulty = document.getElementById('difficulty').value;
+            const numQuestions = parseInt(document.getElementById('numQuestions').value);
+
+            document.getElementById('generateMcqBtn').innerHTML = `
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Generating Test...
+            `;
+            document.getElementById('generateMcqBtn').disabled = true;
+
+            try {
+                const response = await fetch('/notegen/generate_mcq', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: originalText,
+                        difficulty: difficulty,
+                        num_questions: numQuestions
+                    })
+                });
+
+                const data = await response.json();
+                if (!data.success) throw new Error(data.error);
+
+                currentMcqData = data.mcq_data;
+                displayMcqTest();
+
+            } catch (error) {
+                alert('Error generating MCQ test: ' + error.message);
+            } finally {
+                document.getElementById('generateMcqBtn').innerHTML = `
+                    <i class="bi bi-plus-circle me-2"></i>Generate Test
+                `;
+                document.getElementById('generateMcqBtn').disabled = false;
+            }
+        });
+
+        function displayMcqTest() {
+            if (!currentMcqData) return;
+
+            // Reset variables
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            testStartTime = Date.now();
+            
+            // Start timer
+            startTestTimer(currentMcqData.test_info.time_limit * 60);
+
+            // Show MCQ test section
+            document.getElementById('mcqTest').classList.remove('d-none');
+            document.getElementById('testResults').classList.add('d-none');
+
+            // Display first question
+            displayCurrentQuestion();
+            updateNavigation();
+        }
+
+        function displayCurrentQuestion() {
+            if (!currentMcqData || currentQuestionIndex >= currentMcqData.questions.length) return;
+
+            const question = currentMcqData.questions[currentQuestionIndex];
+            const questionsContainer = document.getElementById('mcqQuestions');
+            
+            questionsContainer.innerHTML = `
+                <div class="mcq-question">
+                    <h5 class="mb-3">Q${currentQuestionIndex + 1}. ${question.question}</h5>
+                    <div class="options">
+                        ${Object.entries(question.options).map(([key, value]) => `
+                            <div class="mcq-option" data-option="${key}" onclick="selectOption('${key}')">
+                                <strong>${key}.</strong> ${value}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Highlight previously selected option
+            if (userAnswers[currentQuestionIndex]) {
+                const selectedOption = questionsContainer.querySelector(`[data-option="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+            }
+
+            // Update progress
+            document.getElementById('testProgress').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${currentMcqData.questions.length}`;
+        }
+
+        function selectOption(option) {
+            // Remove previous selection
+            document.querySelectorAll('.mcq-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Add selection to clicked option
+            event.target.closest('.mcq-option').classList.add('selected');
+            
+            // Store answer
+            userAnswers[currentQuestionIndex] = option;
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevQuestion');
+            const nextBtn = document.getElementById('nextQuestion');
+            
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === currentMcqData.questions.length - 1) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Navigation event listeners
+        document.getElementById('prevQuestion').addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayCurrentQuestion();
+                updateNavigation();
+            }
+        });
+
+        document.getElementById('nextQuestion').addEventListener('click', () => {
+            if (currentQuestionIndex < currentMcqData.questions.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                updateNavigation();
+            }
+        });
+
+        document.getElementById('submitTest').addEventListener('click', () => {
+            if (Object.keys(userAnswers).length < currentMcqData.questions.length) {
+                if (!confirm('You haven\'t answered all questions. Are you sure you want to submit?')) {
+                    return;
+                }
+            }
+            submitTest();
+        });
+
+        function submitTest() {
+            clearInterval(testTimer);
+            
+            const testEndTime = Date.now();
+            const timeTaken = Math.floor((testEndTime - testStartTime) / 1000);
+            
+            // Calculate results
+            let correct = 0;
+            const total = currentMcqData.questions.length;
+            
+            currentMcqData.questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct_answer) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / total) * 100);
+            
+            // Display results
+            displayTestResults(correct, total - correct, percentage, timeTaken);
+        }
+
+        function displayTestResults(correct, incorrect, percentage, timeTaken) {
+            document.getElementById('mcqTest').classList.add('d-none');
+            document.getElementById('testResults').classList.remove('d-none');
+            
+            document.getElementById('scorePercentage').textContent = `${percentage}%`;
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('incorrectAnswers').textContent = incorrect;
+            document.getElementById('timeTaken').textContent = formatTime(timeTaken);
+            document.getElementById('scoreProgress').style.width = `${percentage}%`;
+        }
+
+        function startTestTimer(totalSeconds) {
+            let timeLeft = totalSeconds;
+            const timerElement = document.getElementById('testTimer');
+            
+            testTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    submitTest();
+                    return;
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Download test PDF event listener
+        document.getElementById('downloadTestPdf').addEventListener('click', async () => {
+            if (!currentMcqData) return;
+            
+            try {
+                const response = await fetch('/notegen/download_mcq_pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        mcq_data: currentMcqData,
+                        user_answers: userAnswers
+                    })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `mcq_test_${currentMcqData.test_info.test_id}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }
+            } catch (error) {
+                alert('Error downloading test PDF: ' + error.message);
+            }
+        });
+
+        // Review answers functionality
+        document.getElementById('reviewAnswers').addEventListener('click', () => {
+            // Display all questions with answers and explanations
+            currentQuestionIndex = 0;
+            displayReviewMode();
+        });
+
+        function displayReviewMode() {
+            if (!currentMcqData) return;
+
+            const questionsContainer = document.getElementById('mcqQuestions');
+            let reviewHTML = '';
+
+            currentMcqData.questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct_answer;
+
+                reviewHTML += `
+                    <div class="mcq-question mb-4">
+                        <h5 class="mb-3">Q${index + 1}. ${question.question}</h5>
+                        <div class="options">
+                            ${Object.entries(question.options).map(([key, value]) => {
+                                let optionClass = 'mcq-option';
+                                if (key === question.correct_answer) {
+                                    optionClass += ' correct';
+                                } else if (key === userAnswer && !isCorrect) {
+                                    optionClass += ' incorrect';
+                                }
+                                return `
+                                    <div class="${optionClass}">
+                                        <strong>${key}.</strong> ${value}
+                                        ${key === userAnswer ? ' <i class="bi bi-arrow-left text-primary"></i>' : ''}
+                                        ${key === question.correct_answer ? ' <i class="bi bi-check-circle text-success"></i>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="mt-3 p-3" style="background-color: #f8f9fa; border-radius: 0.5rem;">
+                            <strong>Explanation:</strong> ${question.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            questionsContainer.innerHTML = reviewHTML;
+            document.getElementById('mcqTest').classList.remove('d-none');
+            document.getElementById('testResults').classList.add('d-none');
+
+            // Hide navigation buttons in review mode
+            document.getElementById('prevQuestion').style.display = 'none';
+            document.getElementById('nextQuestion').style.display = 'none';
+            document.getElementById('submitTest').style.display = 'none';
+        }
+
+        // Retake test functionality
+        document.getElementById('retakeTest').addEventListener('click', () => {
+            if (currentMcqData) {
+                displayMcqTest();
+            }
+        });
+        
+        // Toggle sidebar on mobile
+        document.querySelector('.navbar-toggler').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

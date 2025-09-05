@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu-Gen | Video to PDF Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3730a3;
+            --secondary-color: #2563eb;
+            --light-bg: #f8fafc;
+            --dark-text: #1e293b;
+            --medium-text: #64748b;
+            --light-text: #94a3b8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+            height: 100vh;
+        }
+        
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding-top: 0.5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--medium-text);
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .sidebar .nav-link:hover {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 1rem 1.25rem;
+            color: var(--medium-text);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        
+        .brand-container {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .brand-container .brand-icon {
+            font-size: 1.75rem;
+            margin-right: 0.5rem;
+        }
+        
+        .top-navbar {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            background: white;
+            height: 60px;
+        }
+        
+        .content-area {
+            padding-top: 80px;
+            padding-bottom: 2rem;
+        }
+        
+        .search-input {
+            border-radius: 50px;
+            padding-left: 2.5rem;
+            background-color: #f1f5f9;
+            border: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.5rem;
+            font-size: 0.65rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #3730a3 0%, #2563eb 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            border-bottom: none;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3730a3 0%, #2563eb 100%);
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #312e81 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        /* Loading spinner */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Success message */
+        .success-message {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* PDF Viewer styles */
+        .pdf-container {
+            display: none;
+            height: 100%;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border: none;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .how-it-works {
+            margin-top: 1.5rem;
+        }
+        
+        .side-by-side-layout {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .input-column {
+            flex: 1;
+        }
+        
+        .preview-column {
+            flex: 1;
+            position: sticky;
+            top: 80px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 991.98px) {
+            .side-by-side-layout {
+                flex-direction: column;
+            }
+            
+            .preview-column {
+                position: static;
+            }
+            
+            .pdf-viewer {
+                height: 500px;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .sidebar {
+                position: static;
+                height: auto;
+                z-index: 1;
+            }
+            
+            .sidebar-sticky {
+                height: auto;
+                position: relative;
+            }
+            
+            .content-area {
+                padding-top: 20px;
+            }
+            
+            .top-navbar {
+                position: static !important;
+            }
+            
+            .pdf-viewer {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p class="mt-3 fw-bold text-primary">Processing your video...</p>
+            <div class="success-message mt-3" id="successMessage">
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    PDF generated successfully!
+                    <button class="btn btn-sm btn-outline-success ms-3" id="closeOverlayBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="sidebar-sticky">
+                    <div class="brand-container d-flex align-items-center">
+                        <i class="bi bi-mortarboard brand-icon"></i>
+                        <h5 class="m-0 fw-bold">Edu-Gen</h5>
+                    </div>
+                    
+                    <h6 class="sidebar-heading">Main Menu</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-book me-2"></i>
+                                My Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-journal-text me-2"></i>
+                                My Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Schedule
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">AI Tools</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/video2pdf">
+                                <i class="bi bi-camera-video me-2"></i>
+                                Video to PDF
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag">
+                                <i class="bi bi-question-circle me-2"></i>
+                                Question Your Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/notegen">
+                                <i class="bi bi-pencil me-2"></i>
+                                Note Generator
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mcq">
+                                <i class="bi bi-list-check me-2"></i>
+                                MCQ Test
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag_tamil">
+                                <i class="bi bi-translate me-2"></i>
+                                RAG Tamil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/memck">
+                                <i class="bi bi-brain me-2"></i>
+                                Personal Learning
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/content_to_ai_video">
+                                <i class="bi bi-film me-2"></i>
+                                AI Video
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">Account</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-gear me-2"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Top Navigation -->
+                <nav class="navbar navbar-expand-lg top-navbar fixed-top col-md-9 ms-sm-auto col-lg-10">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        
+                        <div class="position-relative d-none d-md-block" style="width: 300px;">
+                            <i class="bi bi-search search-icon"></i>
+                            <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+                        </div>
+                        
+                        <div class="d-flex">
+                            <div class="position-relative me-3">
+                                <button class="btn btn-link text-dark position-relative">
+                                    <i class="bi bi-bell fs-5"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                                        3
+                                    </span>
+                                </button>
+                            </div>
+                            
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="user-avatar me-2">JS</div>
+                                    <div class="d-none d-md-block">
+                                        <div class="fw-semibold">John Smith</div>
+                                        <div class="small text-muted">Student</div>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Content Area -->
+                <div class="content-area">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="mb-3">Video to PDF Converter</h4>
+                                <p class="text-muted">Extract presentation slides from educational videos and convert them into a convenient PDF format.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Side by Side Layout -->
+                        <div class="side-by-side-layout">
+                            <!-- Left Column - Form -->
+                            <div class="input-column">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="bi bi-camera-video me-2"></i>Convert Video to PDF
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <form method="POST" enctype="multipart/form-data" id="convertForm">
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold">Upload Video File</label>
+                                                <div class="upload-area" id="dropArea">
+                                                    <i class="bi bi-cloud-arrow-up fs-1 text-primary mb-3"></i>
+                                                    <h5>Drag & Drop your video here</h5>
+                                                    <p class="text-muted">Or click to browse files</p>
+                                                    <input id="video" name="video" type="file" accept="video/*" class="d-none" required>
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-light text-dark me-1">MP4</span>
+                                                        <span class="badge bg-light text-dark me-1">AVI</span>
+                                                        <span class="badge bg-light text-dark">MOV</span>
+                                                    </div>
+                                                    <div class="mt-2 text-muted small">Maximum file size: 10MB</div>
+                                                </div>
+                                                <div id="fileInfo" class="mt-3 d-none">
+                                                    <div class="alert alert-success d-flex align-items-center">
+                                                        <i class="bi bi-check-circle-fill me-2"></i>
+                                                        <div id="fileName">video.mp4</div>
+                                                        <button type="button" class="btn-close ms-auto" id="removeFile"></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-grid gap-2">
+                                                <button type="submit" class="btn btn-primary py-2">
+                                                    <i class="bi bi-arrow-right-circle me-2"></i>Convert to PDF
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <!-- How it works section -->
+                                <div class="card how-it-works mt-4">
+                                    <div class="card-body p-4">
+                                        <h5 class="mb-3"><i class="bi bi-info-circle me-2"></i>How it works</h5>
+                                        <div class="row">
+                                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                                <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                    <i class="bi bi-upload fs-2 text-primary"></i>
+                                                </div>
+                                                <h6 class="mt-3">1. Upload Video</h6>
+                                                <p class="small text-muted">Upload your lecture or presentation video</p>
+                                            </div>
+                                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                                <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                    <i class="bi bi-cpu fs-2 text-primary"></i>
+                                                </div>
+                                                <h6 class="mt-3">2. AI Processing</h6>
+                                                <p class="small text-muted">Our AI detects and extracts key slides</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                    <i class="bi bi-file-earmark-pdf fs-2 text-primary"></i>
+                                                </div>
+                                                <h6 class="mt-3">3. Download PDF</h6>
+                                                <p class="small text-muted">Get your organized slides in PDF format</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column - PDF Viewer -->
+                            <div class="preview-column">
+                                <!-- PDF Viewer Section -->
+                                <div class="card pdf-container" id="pdfContainer">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="bi bi-file-earmark-pdf me-2"></i>Generated PDF
+                                        </div>
+                                        <a id="downloadBtn" class="btn btn-download btn-sm">
+                                            <i class="bi bi-download me-2"></i>Download PDF
+                                        </a>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <embed id="pdfViewer" class="pdf-viewer" type="application/pdf" src="" />
+                                    </div>
+                                </div>
+                                
+                                <!-- Empty state message when no PDF is generated yet -->
+                                <div class="card h-100" id="emptyPdfState">
+                                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-5 text-center">
+                                        <i class="bi bi-file-earmark-pdf fs-1 text-muted mb-3"></i>
+                                        <h5>PDF Preview</h5>
+                                        <p class="text-muted">Convert a video to see the generated PDF here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File upload handling
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('video');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const removeFile = document.getElementById('removeFile');
+        const convertForm = document.getElementById('convertForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const successMessage = document.getElementById('successMessage');
+        const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+        const pdfContainer = document.getElementById('pdfContainer');
+        const pdfViewer = document.getElementById('pdfViewer');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const emptyPdfState = document.getElementById('emptyPdfState');
+        
+        // Hide PDF container initially
+        pdfContainer.style.display = 'none';
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('bg-light');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('bg-light');
+        }
+        
+        // Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileInfo();
+            }
+        }
+        
+        // Handle click on drop area
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Handle file input change
+        fileInput.addEventListener('change', updateFileInfo);
+        
+        function updateFileInfo() {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+                fileInfo.classList.remove('d-none');
+            } else {
+                fileInfo.classList.add('d-none');
+            }
+        }
+        
+        // Remove selected file
+        removeFile.addEventListener('click', () => {
+            fileInput.value = '';
+            fileInfo.classList.add('d-none');
+        });
+        
+        // Close overlay button
+        closeOverlayBtn.addEventListener('click', () => {
+            loadingOverlay.style.display = 'none';
+            successMessage.style.display = 'none';
+        });
+        
+        // Form submission handling
+        convertForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            if (fileInput.files.length === 0) {
+                alert('Please select a video file first.');
+                return;
+            }
+            
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            // Create form data for AJAX submission
+            const formData = new FormData(convertForm);
+            
+            // Send AJAX request
+            fetch(convertForm.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create PDF URL
+                const pdfUrl = URL.createObjectURL(blob);
+                
+                // Get filename from Content-Disposition header or use default
+                let filename = 'slides.pdf';
+                // Extract original filename and use it with .pdf extension
+                if (fileInput.files[0]) {
+                    const originalFilename = fileInput.files[0].name;
+                    filename = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + '.pdf';
+                }
+                
+                // Update PDF viewer
+                pdfViewer.src = pdfUrl;
+                pdfContainer.style.display = 'block';
+                emptyPdfState.style.display = 'none';
+                
+                // Set download link
+                downloadBtn.href = pdfUrl;
+                downloadBtn.download = filename;
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Hide loading spinner after a delay
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingOverlay.style.display = 'none';
+                alert('Error processing video: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

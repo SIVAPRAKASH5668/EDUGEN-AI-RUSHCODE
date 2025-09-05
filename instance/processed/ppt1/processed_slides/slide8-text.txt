@@ -1,0 +1,9 @@
+**The Impact! (0.79)**
+
+Our approach has three key components:
+
+1. **Educational Access (0.71)**: Provides education in native languages, ensuring accessibility for all and fostering inclusivity in underserved communities.
+2. **Scalability (0.72)**: Delivers tailored study materials and interactive tools, enabling students to learn independently and excel academically.
+3. **Empowerment (0.2%)**: Supports multiple languages and subjects, making it adaptable for diverse learners across the world while bridging the digital divide.
+
+Note: The text box values (0.65, 0.71, 0.72, 0.2%, 0./0) seem to be placeholders or scores, but their purpose is unclear. If you could provide more context, I'd be happy to help you integrate them into the content in a more meaningful way.

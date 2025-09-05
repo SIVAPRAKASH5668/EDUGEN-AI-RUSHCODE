@@ -1,0 +1,22 @@
+To put this into perspective, let's do some calculations.
+
+1 billion computations per second is a significant amount of processing power. 
+
+If we assume that 1 billion computations per second is a constant rate, we can calculate the total number of computations that can be performed in a given time frame.
+
+There are:
+- 60 seconds in 1 minute
+- 60 minutes in 1 hour
+- 24 hours in a day
+- 365.25 days in a year (accounting for leap years)
+
+So, the total number of seconds in a year is:
+60 * 60 * 24 * 365.25 = 31,536,000 seconds per year
+
+Now, let's calculate the total number of computations that can be performed in 100,000,000 years:
+1,000,000,000 computations/second * 31,536,000 seconds/year * 100,000,000 years
+
+This equals:
+3.1536 * 10^22 computations
+
+To put this number into perspective, it's an enormously large number, far beyond what we can easily comprehend. For example, the estimated number of atoms in the observable universe is on the order of 10^80. However, the number of computations we calculated is still an incredibly large number, and it's difficult to wrap your head around it.

@@ -1,0 +1,13 @@
+It appears to be a comparison of computational power and time. Here's a reorganized and corrected version:
+
+1 Billion computations per second
+
+= 1,000,000,000 computations/second
+
+To put this into perspective:
+
+* Performing 1 billion computations per second would take:
+	+ Approximately 100 years to complete 3.15 quintillion (3,155,760,000,000,000,000) computations.
+	+ Approximately 100,000,000 years to complete 3.15 sextillion (3,155,760,000,000,000,000,000) computations.
+
+Please note that these calculations are estimates and are based on the assumption that the computations are being performed at a constant rate of 1 billion per second.

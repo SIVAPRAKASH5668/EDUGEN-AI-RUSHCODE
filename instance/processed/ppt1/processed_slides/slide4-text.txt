@@ -1,0 +1,11 @@
+**Multilingual Translation & Explanation**
+Al identifies the content's language and translates it into the user's preferred language, providing both text and audio explanations.
+
+**Content Summarization**
+Extracts and condenses educational content into clear subheadings and key points for easier understanding.
+
+**Interactive Q&A and Quiz Creation**
+Generates relevant questions and quizzes based on the material to enhance learning through active engagement.
+
+**Efficient OCR Integration**
+Seamlessly extracts text and visuals from slides, videos, and documents, ensuring smooth content processing.

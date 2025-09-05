@@ -1,0 +1,22 @@
+To put this into perspective, let's do some calculations.
+
+1 billion computations per second is a significant amount of processing power. 
+
+If we assume that 1 billion computations per second is a constant rate, we can calculate the total number of computations over a period of 100,000,000 years.
+
+There are:
+- 60 seconds in 1 minute
+- 60 minutes in 1 hour
+- 24 hours in 1 day
+- 365.25 days in 1 year (accounting for leap years)
+
+So, the total number of seconds in 1 year is:
+60 * 60 * 24 * 365.25 = 31,536,000 seconds
+
+Now, let's calculate the total number of seconds in 100,000,000 years:
+31,536,000 * 100,000,000 = 3,153,600,000,000,000 seconds
+
+With 1 billion computations per second, the total number of computations over 100,000,000 years would be:
+3,153,600,000,000,000 * 1,000,000,000 = 3,153,600,000,000,000,000,000 computations
+
+That's a 3 followed by 24 zeros, or 3.1536 quintillion computations.

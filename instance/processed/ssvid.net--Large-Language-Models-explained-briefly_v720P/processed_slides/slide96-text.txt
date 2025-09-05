@@ -1,0 +1,16 @@
+To put this into perspective, let's do some calculations.
+
+1 billion computations per second is an incredibly fast rate. 
+
+If we assume that 1 year has approximately 31,536,000 seconds (accounting for leap years), then:
+
+100,000,000 years would have approximately:
+100,000,000 years * 31,536,000 seconds/year = 3,153,600,000,000,000 seconds
+
+Now, if we multiply the number of seconds by the number of computations per second:
+
+3,153,600,000,000,000 seconds * 1,000,000,000 computations/second = 3,153,600,000,000,000,000,000 computations
+
+That's approximately 3.1536 quintillion computations. 
+
+This calculation gives you an idea of the enormous number of computations that can be performed in 100,000,000 years at a rate of 1 billion computations per second.

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu-Gen | PDF MCQ Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3730a3;
+            --secondary-color: #2563eb;
+            --light-bg: #f8fafc;
+            --dark-text: #1e293b;
+            --medium-text: #64748b;
+            --light-text: #94a3b8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f2f5;
+            padding-top: 60px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+            height: 100vh;
+        }
+        
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding-top: 0.5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--medium-text);
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .sidebar .nav-link:hover {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 1rem 1.25rem;
+            color: var(--medium-text);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        
+        .brand-container {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .brand-container .brand-icon {
+            font-size: 1.75rem;
+            margin-right: 0.5rem;
+        }
+        
+        .top-navbar {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            background: white;
+            height: 60px;
+        }
+        
+        .upload-container {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .upload-container:hover, .upload-container.highlight {
+            border-color: var(--secondary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3730a3 0%, #2563eb 100%);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #312e81 0%, #1e40af 100%);
+            transform: translateY(-2px);
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .loader:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-color);
+            border-color: var(--primary-color) transparent var(--primary-color) transparent;
+            animation: loader 1.2s linear infinite;
+        }
+        
+        @keyframes loader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .question-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .question-header {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .option-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+        
+        .option-item:hover {
+            background-color: #f8fafc;
+        }
+        
+        .option-item.correct {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .answer-reveal {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        
+        .search-input {
+            border-radius: 50px;
+            padding-left: 2.5rem;
+            background-color: #f1f5f9;
+            border: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(25%, -25%);
+            font-size: 0.65rem;
+        }
+        
+        @media (max-width: 767.98px) {
+            body {
+                padding-top: 0;
+            }
+            
+            .sidebar {
+                position: static;
+                height: auto;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .sidebar-sticky {
+                height: auto;
+            }
+            
+            main {
+                margin-left: 0 !important;
+            }
+            
+            .top-navbar {
+                position: relative !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="sidebar-sticky">
+                    <div class="brand-container d-flex align-items-center">
+                        <i class="bi bi-mortarboard brand-icon"></i>
+                        <h5 class="m-0 fw-bold">Edu-Gen</h5>
+                    </div>
+                    
+                    <h6 class="sidebar-heading">Main Menu</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-book me-2"></i>
+                                My Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-journal-text me-2"></i>
+                                My Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Schedule
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">AI Tools</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/video2pdf">
+                                <i class="bi bi-camera-video me-2"></i>
+                                Video Analysis
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag">
+                                <i class="bi bi-question-circle me-2"></i>
+                                Question Your Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/notegen">
+                                <i class="bi bi-pencil me-2"></i>
+                                Note Generator
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/mcq">
+                                <i class="bi bi-list-check me-2"></i>
+                                MCQ Test
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rag_tamil">
+                                <i class="bi bi-translate me-2"></i>
+                                RAG Tamil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/memck">
+                                <i class="bi bi-brain me-2"></i>
+                                Personal Learning
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/content_to_ai_video">
+                                <i class="bi bi-film me-2"></i>
+                                AI Video
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">Account</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-person me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-gear me-2"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Top Navigation -->
+            <nav class="navbar navbar-expand-lg top-navbar fixed-top col-md-9 ms-sm-auto col-lg-10">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="position-relative d-none d-md-block" style="width: 300px;">
+                        <i class="bi bi-search search-icon"></i>
+                        <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="position-relative me-3">
+                            <button class="btn btn-link text-dark position-relative">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span class="position-absolute badge rounded-pill bg-danger notification-badge">
+                                    3
+                                </span>
+                            </button>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="user-avatar me-2">JS</div>
+                                <div class="d-none d-md-block">
+                                    <div class="fw-semibold">John Smith</div>
+                                    <div class="small text-muted">Student</div>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                    <h1 class="h2">MCQ Generator</h1>
+                    <div class="d-none" id="quiz-timer">
+                        <div class="timer">
+                            <i class="bi bi-clock me-2"></i><span id="time-display">00:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Form -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <form id="mcqForm" class="needs-validation" novalidate>
+                            <div class="upload-container mb-4" id="dropZone">
+                                <input 
+                                    type="file" 
+                                    name="file" 
+                                    id="pdfFile" 
+                                    accept=".pdf" 
+                                    class="d-none"
+                                    required
+                                >
+                                <label for="pdfFile" class="mb-0 cursor-pointer d-flex flex-column align-items-center">
+                                    <i class="bi bi-cloud-arrow-up fs-1 text-primary mb-3"></i>
+                                    <h5 class="mb-2">Upload PDF Document</h5>
+                                    <p class="text-muted mb-0">Click to browse or drag & drop your file here</p>
+                                </label>
+                                <p id="selectedFile" class="mt-2 text-primary fw-medium"></p>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Language</label>
+                                    <select name="language" class="form-select">
+                                        <option value="english" selected>English</option>
+                                        <option value="tamil">Tamil</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Difficulty Level</label>
+                                    <select name="difficulty" class="form-select">
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Number of Questions</label>
+                                    <input 
+                                        type="number" 
+                                        name="num_questions" 
+                                        min="1" 
+                                        max="10" 
+                                        value="5" 
+                                        class="form-control"
+                                    >
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button 
+                                    type="submit" 
+                                    class="btn btn-primary py-2 px-4 d-flex align-items-center gap-2"
+                                >
+                                    <i class="bi bi-magic"></i> Generate MCQs
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="loading" class="text-center py-5 my-5 d-none">
+                    <div class="loader mb-4"></div>
+                    <h4 class="mb-3">Generating Your Questions</h4>
+                    <p class="text-muted">Analyzing your document and crafting quality questions...</p>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="results" class="d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h4 mb-0">Generated Questions</h2>
+                        <div class="d-flex gap-2">
+                            <button id="startTimer" class="btn btn-outline-primary">
+                                <i class="bi bi-stopwatch me-1"></i> Start Timer
+                            </button>
+                            <button id="showAllAnswers" class="btn btn-outline-success">
+                                <i class="bi bi-eye me-1"></i> Show All Answers
+                            </button>
+                        </div>
+                    </div>
+                    <div id="questionsList" class="mb-4"></div>
+                    <div class="text-center">
+                        <button id="generateNewBtn" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Generate New Questions
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File upload handling
+        const fileInput = document.getElementById('pdfFile');
+        const selectedFile = document.getElementById('selectedFile');
+        const dropZone = document.getElementById('dropZone');
+        const mcqForm = document.getElementById('mcqForm');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const questionsList = document.getElementById('questionsList');
+        const generateNewBtn = document.getElementById('generateNewBtn');
+        const showAllAnswers = document.getElementById('showAllAnswers');
+        const startTimer = document.getElementById('startTimer');
+        const quizTimer = document.getElementById('quiz-timer');
+        const timeDisplay = document.getElementById('time-display');
+        
+        let timer;
+        let seconds = 0;
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile.textContent = `Selected: ${file.name}`;
+                selectedFile.classList.remove('d-none');
+            } else {
+                selectedFile.textContent = '';
+                selectedFile.classList.add('d-none');
+            }
+        });
+
+        // Form submission
+        mcqForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a PDF file');
+                return;
+            }
+            
+            // Show loading state
+            mcqForm.closest('.card').classList.add('d-none');
+            loading.classList.remove('d-none');
+            results.classList.add('d-none');
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/mcq/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Hide loading state
+                    loading.classList.add('d-none');
+                    results.classList.remove('d-none');
+                    
+                    // Display questions
+                    questionsList.innerHTML = '';
+                    
+                    data.questions.forEach((q, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'question-card mb-4';
+                        
+                        const options = q.options.map((opt, i) => {
+                            const letter = String.fromCharCode(65 + i);
+                            return `
+                                <div class="option-item" data-value="${letter}">
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            name="question${index}" 
+                                            value="${letter}"
+                                            id="q${index}opt${i}"
+                                            class="form-check-input"
+                                        >
+                                        <label for="q${index}opt${i}" class="form-check-label">
+                                            <span class="fw-medium me-2">${letter}.</span> ${opt}
+                                        </label>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        
+                        card.innerHTML = `
+                            <div class="question-header">
+                                <h5 class="mb-0">Question ${index + 1}</h5>
+                            </div>
+                            <div class="p-4">
+                                <p class="fw-medium mb-4">${q.question}</p>
+                                <div class="options mb-4">
+                                    ${options}
+                                </div>
+                                <button 
+                                    class="btn btn-sm btn-outline-success answer-btn"
+                                    data-correct="${q.correct}"
+                                    data-explanation="${q.explanation}"
+                                >
+                                    <i class="bi bi-check-circle me-1"></i> Check Answer
+                                </button>
+                                <div class="answer-reveal d-none">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <h6 class="mb-0">Correct Answer: ${q.correct}</h6>
+                                    </div>
+                                    <p class="mb-0">${q.explanation}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        questionsList.appendChild(card);
+                    });
+                    
+                    // Add event listeners to check answer buttons
+                    document.querySelectorAll('.answer-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const answerDiv = this.nextElementSibling;
+                            const correctAnswer = this.getAttribute('data-correct');
+                            const card = this.closest('.question-card');
+                            const selectedOption = card.querySelector('input[type="radio"]:checked');
+                            
+                            // Check if an option is selected
+                            if (selectedOption) {
+                                // Mark correct option
+                                card.querySelectorAll('.option-item').forEach(item => {
+                                    if (item.getAttribute('data-value') === correctAnswer) {
+                                        item.classList.add('correct');
+                                    }
+                                });
+                                
+                                // Show answer explanation
+                                answerDiv.classList.remove('d-none');
+                                this.classList.add('d-none');
+                            } else {
+                                alert('Please select an option first');
+                            }
+                        });
+                    });
+                    
+                } else {
+                    alert(data.error || 'Failed to generate questions');
+                    loading.classList.add('d-none');
+                    mcqForm.closest('.card').classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                loading.classList.add('d-none');
+                mcqForm.closest('.card').classList.remove('d-none');
+            }
+        });
+
+        // Generate new questions button
+        generateNewBtn.addEventListener('click', function() {
+            results.classList.add('d-none');
+            mcqForm.closest('.card').classList.remove('d-none');
+            stopTimer();
+            quizTimer.classList.add('d-none');
+        });
+        
+        // Show all answers button
+        showAllAnswers.addEventListener('click', function() {
+            document.querySelectorAll('.answer-reveal').forEach(div => {
+                div.classList.remove('d-none');
+            });
+            
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.classList.add('d-none');
+                
+                // Mark correct options
+                const card = btn.closest('.question-card');
+                const correctAnswer = btn.getAttribute('data-correct');
+                
+                card.querySelectorAll('.option-item').forEach(item => {
+                    if (item.getAttribute('data-value') === correctAnswer) {
+                        item.classList.add('correct');
+                    }
+                });
+            });
+        });
+        
+        // Timer functionality
+        startTimer.addEventListener('click', function() {
+            if (timer) {
+                stopTimer();
+                this.innerHTML = '<i class="bi bi-stopwatch me-1"></i> Start Timer';
+                quizTimer.classList.add('d-none');
+            } else {
+                startQuizTimer();
+                this.innerHTML = '<i class="bi bi-stop-circle me-1"></i> Stop Timer';
+                quizTimer.classList.remove('d-none');
+            }
+        });
+        
+        function startQuizTimer() {
+            seconds = 0;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                seconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+        
+        function stopTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('highlight', 'border-primary');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('highlight', 'border-primary');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                fileInput.files = files;
+                selectedFile.textContent = `Selected: ${files[0].name}`;
+                selectedFile.classList.remove('d-none');
+            } else {
+                alert('Please upload a PDF file');
+            }
+        }
+    </script>
+</body>
+</html>

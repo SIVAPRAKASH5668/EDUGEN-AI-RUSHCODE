@@ -1,0 +1,11 @@
+To organize and correct the content, let's break it down:
+
+1. **1 Billion computations per Second**: This is a rate of computation, meaning a device or system can perform 1 billion calculations or operations in one second.
+
+2. **Conversions**:
+   - **1 Second** = 1 second
+   - **1 Minute** = 60 seconds
+   - To find out how many computations are done in a minute, we multiply the number of computations per second by the number of seconds in a minute.
+   - **Computations per Minute** = 1,000,000,000 computations/second * 60 seconds = 60,000,000,000 computations/minute
+
+So, in one minute, a system that can perform 1 billion computations per second would perform 60 billion computations.

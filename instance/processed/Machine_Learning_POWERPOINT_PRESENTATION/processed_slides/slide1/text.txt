@@ -1,0 +1,17 @@
+Deep learning is a sub-field of machine learning. It means the machine uses different layers to learn from the data.
+
+To elaborate, deep learning is a type of machine learning that uses artificial neural networks with multiple layers to analyze and interpret data. These layers allow the machine to learn complex patterns and relationships within the data, enabling it to make accurate predictions and decisions.
+
+The key characteristics of deep learning include:
+
+1. **Multiple layers**: Deep learning models use multiple layers of artificial neural networks to process and transform data.
+2. **Automatic feature learning**: Deep learning models can automatically learn relevant features from the data, eliminating the need for manual feature engineering.
+3. **Complex pattern recognition**: Deep learning models can recognize complex patterns in data, including images, speech, and text.
+
+Applications of deep learning include:
+
+1. **Image recognition**: Deep learning models can recognize objects, people, and patterns in images.
+2. **Natural language processing**: Deep learning models can understand and generate human language.
+3. **Speech recognition**: Deep learning models can recognize and transcribe spoken language.
+
+Overall, deep learning is a powerful tool for machine learning that has many potential applications in areas such as computer vision, natural language processing, and robotics.

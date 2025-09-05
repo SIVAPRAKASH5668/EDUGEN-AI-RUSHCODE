@@ -1,0 +1,28 @@
+Here is the organized and corrected content:
+
+**Attention Is All You Need**
+
+Authors:
+- Ashish Vaswani
+- Noam Shazeer
+- Niki Parmar
+- Jakob Uszkoreit
+- Llion Jones
+- Aidan N. Gomez
+- Lukasz Kaiser
+- Illia Polosukhin
+
+Affiliations:
+- Google Research
+- Google Brain
+- University of Toronto
+
+Contact Information:
+- ashishv@google.com
+- noam@google.com
+- nikip@google.com
+- jakob@google.com
+- llion@google.com
+- aidan@g.cs.toronto.edu
+- lukasz@google.com
+- illia.polosukhin@gmail.com

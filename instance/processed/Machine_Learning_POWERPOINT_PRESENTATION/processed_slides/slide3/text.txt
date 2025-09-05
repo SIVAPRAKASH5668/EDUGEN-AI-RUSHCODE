@@ -1,0 +1,7 @@
+**Title: Why Machine Learning? (0.85)**
+
+Machine learning has become increasingly popular due to several factors. One key reason is the development of much more affordable data storage solutions. This has helped make big data sets available to more organizations and for a much wider variety of applications.
+
+Additionally, advancements in technology have enabled processing speeds that are faster than ever before.
+
+**Author/Source: AMIT**

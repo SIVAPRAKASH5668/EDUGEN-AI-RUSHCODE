@@ -1,0 +1,20 @@
+It appears that the content is related to a video classification project. Here is a reorganized and corrected version of the content:
+
+**Video Classification Project**
+
+* **Classification**: 
+  + Extractive
+  + Abstractive
+  + Combined
+  + Transcriptive
+
+* **Project Architecture**:
+  + Slide
+  + Operations
+  + Figures
+
+* **Frames Extraction**:
+  + Removal of duplicate frames
+  + Removal of pre-sequential frames
+
+This reorganization aims to make the content more readable and easier to understand. If there are any further corrections or clarifications needed, please let me know.
