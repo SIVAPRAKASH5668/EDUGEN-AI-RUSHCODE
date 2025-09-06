@@ -24,7 +24,7 @@ scikit-image==0.19.3
 
 # Speech & audio
 SpeechRecognition==3.8.1
-
+ultralytics
 # Utils
 python-dotenv==1.0.0
 json5==0.9.6
