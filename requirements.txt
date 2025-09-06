@@ -1,6 +1,5 @@
 # Core web framework
-setuptools>=65.5.0
-wheel
+
 Flask==2.2.2
 Werkzeug==2.2.2
 gunicorn==21.2.0
