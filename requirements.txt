@@ -1,18 +1,30 @@
+# Core web framework
 Flask==2.2.2
-langchain==0.0.163
-
-reportlab==3.6.1
-PyMuPDF==1.21.1
-json5==0.9.6
-tenacity==8.0.1
-python-dotenv==1.0.0
-PyPDF2==2.11.0
-transformers==4.28.1
-speechrecognition==3.8.1
-
 Werkzeug==2.2.2
+gunicorn==21.2.0
+
+# Core AI/ML dependencies
+torch==2.1.2
+transformers==4.28.1
+langchain==0.0.163
+langchain_community==0.0.27  
+langchain_groq==0.0.1         
+
+# PDF and report generation
+reportlab==3.6.1
+fpdf==1.7.2
+PyMuPDF==1.21.1
+PyPDF2==2.11.0
+
+# CV and OCR
 opencv-python==4.6.0.66
 pytesseract==0.3.9
 Pillow==9.3.0
-fpdf==1.7.2
-ultralytics==8.0.24
+scikit-image==0.19.3  
+# Speech & audio
+SpeechRecognition==3.8.1
+
+# Utils
+python-dotenv==1.0.0
+json5==0.9.6
+tenacity==8.0.1
