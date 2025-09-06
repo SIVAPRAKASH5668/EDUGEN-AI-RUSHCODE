@@ -6,7 +6,7 @@ gunicorn==21.2.0
 # Core AI/ML dependencies
 torch==2.8.0
 transformers==4.28.1
-langchain==0.1.14
+langchain==0.0.163
 langchain_community==0.0.27
 langchain_groq==0.0.1
 
@@ -29,4 +29,4 @@ SpeechRecognition==3.8.1
 python-dotenv==1.0.0
 json5==0.9.6
 tenacity>=8.1.0,<9.0.0
-ultralytics==8.0.20
+
