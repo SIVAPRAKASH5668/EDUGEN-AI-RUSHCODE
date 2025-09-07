@@ -1,6 +1,10 @@
 # Edu-Gen Platform
 
+
 Welcome to the **Edu-Gen Platform**, a cutting-edge learning ecosystem designed to enhance how students and educators interact with content. Our platform integrates advanced technologies such as **YOLO**, **OCR**, **RAG (Retrieval-Augmented Generation)**, **BART**, **Llama**, and **GroQ** to revolutionize the learning experience, providing tools to convert videos into PDFs, generate MCQs, summarize content, create notes, and much more.
+
+## 🔗 Live Demo
+[Click here to view the project](https://edugen-ai-rushcode-464v.onrender.com)
 
 ![Home Page](images/home.png)
 
