@@ -17,8 +17,6 @@ def create_app():
     
     
     # Register blueprint
-    from app.video2pdf import bp as video2pdf_bp
-    app.register_blueprint(video2pdf_bp, url_prefix='/video2pdf')
     
     from app.rag import bp as rag_bp
     app.register_blueprint(rag_bp, url_prefix='/rag')  # Your current setup
