@@ -29,14 +29,8 @@ def create_app():
     app.register_blueprint(notegen_bp, url_prefix='/notegen')
 
     # Import blueprints
-    from app.mcq import bp as mcq_bp
-
-    app.register_blueprint(mcq_bp,url_prefix='/mcq')
 
 
-
-    from app.memck import bp as memck_bp
-    app.register_blueprint(memck_bp, url_prefix='/memck')
 
 
 
